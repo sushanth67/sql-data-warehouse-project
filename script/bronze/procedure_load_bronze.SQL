@@ -1,12 +1,19 @@
 /*
-=====================================================================
-DDL Script : create bronze tables
-=====================================================================
-script purpose :
-This script creates a tables in the 'bronze' schema dropping existing 
-if they already exist .
-Run this script to re-define the DDL structure of 'bronze' tables
-======================================================================
+================================================================================================
+stored Procedure:load bronze layer(source -> bronze)
+================================================================================================
+script Purpose:
+	This stored procedure loads data into the 'bronze' schema from external CSV files.
+	It performs the following actions :
+	-Truncate teh bronze tables before loading data.
+	-uses the 'BULK INSERT' command to load data from csv fies to bronze tables.
+
+Parameters:
+	none.
+  this stored proedure doesnot accept any parameters or return any values.
+
+Usage Examples:
+	EXEC bronze.load_bronze;
 */
 
 CREATE OR ALTER PROCEDURE bronze.load_bronze AS 
@@ -69,25 +76,5 @@ BEGIN
 
 		truncate table bronze.erp_px_cat_giv2
 		bulk insert bronze.erp_px_cat_giv2
-		from 'C:\Users\Sushanthshulikere\Downloads\sql-data-warehouse-project-main\sql-data-warehouse-project-main\datasets\source_erp\PX_CAT_G1V2.csv'
-		with(
-			FIRSTROW = 2,
-			Fieldterminator = ',',
-			tABLOCK
-		);
-		
-
-	END TRY
-	BEGIN CATCH
-		print '=============================='
-		print 'error occured during loading bronze layer'
-		print 'error message' + ERROR_MESSAGE()
-		print 'Error Message' + CAST(ERROR_NUMBER() AS NVARCHAR);
-		print 'Error Message' + CAST(ERROR_STATE() AS NVARCHAR);
-		print '=============================='
-	END 
-	CATCH
-END
-
 
 execute bronze.load_bronze
